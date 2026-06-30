@@ -1,23 +1,23 @@
 """
 app.py — Streamlit Starter: Entry Point & Authentication Gate
 =============================================================
-โครงสร้างหลักของแอปพลิเคชัน:
-  1. โหลด Environment Variables จาก .env
-  2. ตรวจสอบ AUTH_MODE (mock หรือ Azure AD)
-  3. ถ้ายังไม่ได้ Login → แสดงหน้า Login แล้ว st.stop()
-  4. ถ้า Login แล้ว → แสดง Sidebar และ Navigation ปกติ
+Application structure:
+  1. Load Environment Variables from .env
+  2. Check AUTH_MODE (mock or Azure AD)
+  3. If not logged in → Show Login page and call st.stop()
+  4. If logged in → Show Sidebar and standard Navigation
 
-หลักการออกแบบ (ตาม streamlit/agent-skills):
-  - ใช้ st.navigation() สำหรับ Multi-page routing (Streamlit >= 1.36)
-  - Auth gate อยู่ที่ app.py ชั้นเดียว ไม่กระจายไปทุก page
-  - session_state.user เก็บข้อมูล user ทั่วทั้งแอป
+Design principles (based on streamlit/agent-skills):
+  - Use st.navigation() for Multi-page routing (Streamlit >= 1.36)
+  - Auth gate is handled in app.py at the top level, not scattered across pages
+  - session_state.user stores user data globally
 """
 
 import os
 from dotenv import load_dotenv
 import streamlit as st
 
-# ── โหลด .env ก่อนสิ่งอื่นใดทั้งหมด ─────────────────────────
+# ── Load .env before everything else ─────────────────────────
 load_dotenv()
 
 # ── Page Config ───────────────────────────────────────────────
@@ -29,7 +29,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── เลือก Auth Module ─────────────────────────────────────────
+# ── Select Auth Module ─────────────────────────────────────────
 USE_MOCK = os.getenv("USE_MOCK_AUTH", "true").lower() == "true"
 
 if USE_MOCK:
@@ -37,12 +37,12 @@ if USE_MOCK:
 else:
     from auth.azure_ad import azure_login_ui as login_ui, azure_logout as logout_fn
 
-# ── Auth Gate: หยุดถ้ายังไม่ได้ Login ────────────────────────
+# ── Auth Gate: Stop execution if not logged in ────────────────────────
 if not st.session_state.get("authenticated"):
     login_ui()
     st.stop()
 
-# ── ส่วนนี้รันเมื่อ Login แล้วเท่านั้น ───────────────────────
+# ── This section runs only after a successful login ───────────────────────
 user = st.session_state.get("user", {})
 
 # ── CSS Injection: Dark Theme ─────────────────────────────────
