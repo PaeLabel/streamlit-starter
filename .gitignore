@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+wheels/
+
+# Virtual Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Sensitive Config (NEVER COMMIT)
+.env
+.env.local
+.env.*.local
+secrets.toml
+.streamlit/secrets.toml
+
+# Data files (may contain sensitive data)
+data/raw/
+data/cache/
+*.csv
+!data/sample/*.csv
+
+# Streamlit cache
+.streamlit/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Node (for Custom Components)
+node_modules/
+components/*/frontend/dist/
+components/*/frontend/node_modules/
